@@ -1,12 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'features/tasks/tasks_screen.dart';
-import 'features/habits/habits_screen.dart';
 import 'features/goals/goals_screen.dart';
 import 'features/focus/focus_screen.dart';
 import 'features/analytics/analytics_screen.dart';
+import 'data/task_repository.dart';
 
-void main() {
-  runApp(const PulseApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // ── Init Hive ─────────────────────────────────────────────────────────────
+  await Hive.initFlutter();
+  await TaskRepository.init();
+
+  runApp(
+    // ── Wrap with Riverpod ──────────────────────────────────────────────────
+    const ProviderScope(
+      child: PulseApp(),
+    ),
+  );
 }
 
 class PulseApp extends StatelessWidget {
@@ -63,7 +76,6 @@ class _PulseHomeState extends State<PulseHome> {
         elevation: 0,
         title: Row(
           children: [
-            // Streak
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
@@ -85,7 +97,6 @@ class _PulseHomeState extends State<PulseHome> {
               ),
             ),
             const SizedBox(width: 6),
-            // Tasks done
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
@@ -107,7 +118,6 @@ class _PulseHomeState extends State<PulseHome> {
               ),
             ),
             const SizedBox(width: 6),
-            // Focus score
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
@@ -149,15 +159,15 @@ class _PulseHomeState extends State<PulseHome> {
       ),
       body: _screens[_currentIndex],
       floatingActionButton: Padding(
-      padding: const EdgeInsets.only(bottom: 8, right: 4),
-      child: FloatingActionButton.small(
-      onPressed: _onFabPressed,
-      backgroundColor: Colors.white,
-      shape: const CircleBorder(),
-      elevation: 4,
-      child: const Icon(Icons.add, color: Colors.black, size: 20),
-    ),
-),
+        padding: const EdgeInsets.only(bottom: 8, right: 4),
+        child: FloatingActionButton.small(
+          onPressed: _onFabPressed,
+          backgroundColor: Colors.white,
+          shape: const CircleBorder(),
+          elevation: 4,
+          child: const Icon(Icons.add, color: Colors.black, size: 20),
+        ),
+      ),
       bottomNavigationBar: NavigationBar(
         backgroundColor: const Color(0xFF1E1E1E),
         indicatorColor: const Color(0xFF2A2A2A),
