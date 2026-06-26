@@ -3,8 +3,6 @@
 // All screens read from and write to this model.
 // v1: stored in Hive local database.
 
-import 'package:flutter/foundation.dart';
-
 // ── Priority levels ───────────────────────────────────────────────────────────
 enum Priority {
   low,
